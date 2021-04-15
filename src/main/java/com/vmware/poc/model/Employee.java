@@ -12,12 +12,12 @@ public class Employee {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String employeeName;
-	private String employeeAge;
+	private int employeeAge;
 
 	public Employee() {
 	}
 
-	public Employee(String employeeName, String employeeAge) {
+	public Employee(String employeeName, int employeeAge) {
 		this.employeeName = employeeName;
 		this.employeeAge = employeeAge;
 	}
@@ -30,11 +30,11 @@ public class Employee {
 		this.employeeName = employeeName;
 	}
 
-	public String getEmployeeAge() {
+	public int getEmployeeAge() {
 		return employeeAge;
 	}
 
-	public void setEmployeeAge(String employeeAge) {
+	public void setEmployeeAge(int employeeAge) {
 		this.employeeAge = employeeAge;
 	}
 
