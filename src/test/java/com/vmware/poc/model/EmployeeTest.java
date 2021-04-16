@@ -25,9 +25,6 @@ public class EmployeeTest {
 	@InjectMocks
 	private Employee employeeMock = mock(Employee.class, Mockito.RETURNS_DEEP_STUBS);
 
-	@Mock
-	EntityManager entityManager = mock(EntityManager.class);
-
 	@Test
 	public void testEmployee() throws Exception {
 		PowerMockito.whenNew(Employee.class).withNoArguments().thenReturn(employeeMock);
