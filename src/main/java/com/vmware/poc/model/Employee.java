@@ -22,6 +22,10 @@ public class Employee {
 		this.employeeAge = employeeAge;
 	}
 
+	public long getId() {
+		return id;
+	}
+
 	public String getEmployeeName() {
 		return employeeName;
 	}

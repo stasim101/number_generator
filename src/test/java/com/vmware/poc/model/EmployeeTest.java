@@ -1,69 +1,88 @@
 package com.vmware.poc.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class EmployeeTest {
+import javax.persistence.EntityManager;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Employee.class)
+public class EmployeeTest {
+
+	@InjectMocks
+	private Employee employeeMock = mock(Employee.class, Mockito.RETURNS_DEEP_STUBS);
+
+	@Mock
+	EntityManager entityManager = mock(EntityManager.class);
 
 	@Test
-	void testEmployee() {
-		// Custom values for test of default constructor Employee()
-		Employee employeeInstance = new Employee();
-		employeeInstance.setEmployeeName("employeeName");
-		employeeInstance.setEmployeeAge(22);
-		// Assertions Employee()
-		assertTrue(employeeInstance instanceof Employee);
-		assertEquals("employeeName", employeeInstance.getEmployeeName());
-		assertEquals(22, employeeInstance.getEmployeeAge());
+	public void testEmployee() throws Exception {
+		PowerMockito.whenNew(Employee.class).withNoArguments().thenReturn(employeeMock);
+		Employee testInstance = new Employee();
+		assertEquals(employeeMock, testInstance);
 	}
 
 	@Test
-	void testEmployeeStringString() {
-		// Custom values for test of parameterized constructor Employee(String
-		// employeeName, String employeeAge)
-		Employee employeeInstance = new Employee("employeeName", 22);
-		// Assertion Employee(String employeeName, String employeeAge)
-		assertTrue(employeeInstance instanceof Employee);
-		assertEquals("employeeName", employeeInstance.getEmployeeName());
-		assertEquals(22, employeeInstance.getEmployeeAge());
+	public void testEmployeeStringInt() throws Exception {
+		PowerMockito.whenNew(Employee.class).withAnyArguments().thenReturn(employeeMock);
+		Employee testInstance = new Employee("Test", 100);
+		assertEquals(employeeMock, testInstance);
 	}
 
 	@Test
-	void testGetEmployeeName() {
-		// Custom values for test of retrieving an EmployeeName
-		Employee employeeInstance = new Employee("employeeName", 22);
-		// Assertion
-		assertEquals("employeeName", employeeInstance.getEmployeeName());
+	public void testGetId() {
+		when(employeeMock.getId()).thenReturn(100L);
+		assertEquals(100L, employeeMock.getId());
 	}
 
 	@Test
-	void testSetEmployeeName() {
-		// Custom values for test of setting an EmployeeName
-		Employee employeeInstance = new Employee();
-		employeeInstance.setEmployeeName("employeeName");
-		employeeInstance.setEmployeeAge(22);
-		assertEquals("employeeName", employeeInstance.getEmployeeName());
+	public void testGetEmployeeName() {
+		when(employeeMock.getEmployeeName()).thenReturn("Dummy");
+		assertEquals("Dummy", employeeMock.getEmployeeName());
 	}
 
 	@Test
-	void testGetEmployeeAge() {
-		// Custom values for test of retrieving an EmployeeAge
-		Employee employeeInstance = new Employee("employeeName", 22);
-		// Assertion
-		assertEquals(22, employeeInstance.getEmployeeAge());
+	public void testSetEmployeeName() {
+
+		doAnswer(invocationOnMock -> {
+			String injectedString = (String) invocationOnMock.getArguments()[0];
+			EmployeeTest.this.employeeMock.setEmployeeName(injectedString);
+			return null;
+		}).when(this.employeeMock).setEmployeeName(Mockito.anyString());
+		when(this.employeeMock.getEmployeeName())
+				.thenAnswer(invocationOnMock -> EmployeeTest.this.employeeMock.getEmployeeName());
 	}
 
 	@Test
-	void testSetEmployeeAge() {
-		// Custom values for test of setting an EmployeeAge
-		Employee employeeInstance = new Employee();
-		employeeInstance.setEmployeeName("employeeName");
-		employeeInstance.setEmployeeAge(22);
-		// Assertions setEmployeeAge(int age)
-		assertEquals(22, employeeInstance.getEmployeeAge());
+	public void testGetEmployeeAge() {
+		when(employeeMock.getEmployeeAge()).thenReturn(23);
+		assertEquals(23, employeeMock.getEmployeeAge());
+	}
+
+	@Test
+	public void testSetEmployeeAge() {
+
+		doAnswer(invocationOnMock -> {
+			int injectedInt = (int) invocationOnMock.getArguments()[0];
+			EmployeeTest.this.employeeMock.setEmployeeAge(injectedInt);
+			return null;
+		}).when(this.employeeMock).setEmployeeAge(Mockito.anyInt());
+		when(this.employeeMock.getEmployeeAge())
+				.thenAnswer(invocationOnMock -> EmployeeTest.this.employeeMock.getEmployeeAge());
+
 	}
 
 }
