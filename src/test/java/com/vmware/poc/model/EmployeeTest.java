@@ -3,16 +3,10 @@ package com.vmware.poc.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-
-import javax.persistence.EntityManager;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -53,7 +47,6 @@ public class EmployeeTest {
 
 	@Test
 	public void testSetEmployeeName() {
-
 		doAnswer(invocationOnMock -> {
 			String injectedString = (String) invocationOnMock.getArguments()[0];
 			EmployeeTest.this.employeeMock.setEmployeeName(injectedString);
@@ -71,7 +64,6 @@ public class EmployeeTest {
 
 	@Test
 	public void testSetEmployeeAge() {
-
 		doAnswer(invocationOnMock -> {
 			int injectedInt = (int) invocationOnMock.getArguments()[0];
 			EmployeeTest.this.employeeMock.setEmployeeAge(injectedInt);
@@ -79,7 +71,5 @@ public class EmployeeTest {
 		}).when(this.employeeMock).setEmployeeAge(Mockito.anyInt());
 		when(this.employeeMock.getEmployeeAge())
 				.thenAnswer(invocationOnMock -> EmployeeTest.this.employeeMock.getEmployeeAge());
-
 	}
-
 }
