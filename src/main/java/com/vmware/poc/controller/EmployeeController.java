@@ -10,19 +10,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.service.EmployeeService;
 
 @RestController
+@RequestMapping("/api")
 public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
 
-	@PostMapping
-	public long uploadEmployeeDataFile() {
+	@PostMapping("/employee")
+	public long uploadEmployeeDataFile(@RequestParam("file") MultipartFile file, @RequestParam String action) {
 		return 0L;
 	}
 
@@ -32,17 +36,17 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/find/{id}")
-	public String retreiveAnEmployee(@PathVariable("id") long id) {
-		return employeeService.getAnEmployee(id);
+	public ResponseEntity<Object> retreiveAnEmployee(@PathVariable("id") long id) {
+		return ResponseEntity.ok(employeeService.getAnEmployee(id));
 	}
 
 	@PatchMapping("/update/{id}")
-	public String updateEmployeeData(@PathVariable("id") long id, @RequestBody Employee employee) {
-		return employeeService.updateAnEmployee(id, employee);
+	public ResponseEntity<Object> updateEmployeeData(@PathVariable("id") long id, @RequestBody Employee employee) {
+		return ResponseEntity.ok(employeeService.updateAnEmployee(id, employee));
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public String deleteAnEmployee(@PathVariable("id") long id) {
-		return employeeService.deleteAnEmployee(id);
+	public ResponseEntity<Object> deleteAnEmployee(@PathVariable("id") long id) {
+		return ResponseEntity.ok(employeeService.deleteAnEmployee(id));
 	}
 }

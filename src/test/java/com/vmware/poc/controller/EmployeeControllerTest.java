@@ -24,10 +24,10 @@ import com.vmware.poc.service.EmployeeService;
 public class EmployeeControllerTest {
 
 	@InjectMocks
-	EmployeeController employeeController;
+	private EmployeeController employeeController;
 
 	@Mock
-	EmployeeService employeeService;
+	private EmployeeService employeeService;
 
 	@Test
 	public void testUploadEmployeeDataFile() {
@@ -36,13 +36,15 @@ public class EmployeeControllerTest {
 
 	@Test
 	public void testCreateNewEmployee() {
-
+		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 		Employee testInstance = new Employee("Test user", 100);
 		when(employeeService.saveAnEmployee(Mockito.any(Employee.class))).thenReturn(testInstance);
 		ResponseEntity<Object> responseEntity = employeeController.createNewEmployee(testInstance);
 		Employee response = (Employee) responseEntity.getBody();
+		
+		assertEquals(201,responseEntity.getStatusCodeValue());
 		assertEquals(testInstance.getEmployeeName(), response.getEmployeeName());
 		assertEquals(testInstance.getEmployeeAge(), response.getEmployeeAge());
 
@@ -52,7 +54,11 @@ public class EmployeeControllerTest {
 	public void testRetreiveAnEmployee() {
 
 		when(employeeService.getAnEmployee(Mockito.any(Long.class))).thenReturn("Tested perfectly");
-		assertEquals("Tested perfectly", employeeController.retreiveAnEmployee(1L));
+		ResponseEntity<Object> responseEntity = employeeController.retreiveAnEmployee(1L);
+		
+		assertEquals("Tested perfectly",responseEntity.getBody().toString());
+		assertEquals(200,responseEntity.getStatusCodeValue());
+		
 
 	}
 
@@ -61,14 +67,18 @@ public class EmployeeControllerTest {
 
 		when(employeeService.updateAnEmployee(Mockito.any(Long.class), Mockito.any(Employee.class)))
 				.thenReturn("Sample String");
-		assertEquals("Sample String", employeeController.updateEmployeeData(1L, new Employee()));
-
+		ResponseEntity<Object> responseEntity = employeeController.updateEmployeeData(1L,new Employee ());
+		
+		assertEquals(200,responseEntity.getStatusCodeValue());
+		assertEquals("Sample String", responseEntity.getBody().toString());
 	}
 
 	@Test
-	public void testDeleteAnEmployee() {
-		
+	public void testDeleteAnEmployee() {	
 		when(employeeService.deleteAnEmployee(Mockito.any(Long.class))).thenReturn("Sample String");
+		ResponseEntity<Object> responseEntity = employeeController.deleteAnEmployee(1L);
+
+		assertEquals(200,responseEntity.getStatusCodeValue());
 		assertEquals("Sample String", employeeController.deleteAnEmployee(1L));
 
 	}

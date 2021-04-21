@@ -1,8 +1,10 @@
 package com.vmware.poc.service;
 
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.poc.model.Employee;
@@ -40,7 +42,7 @@ public class EmployeeService {
 
 	public String deleteAnEmployee(long id) {
 		Employee toBeDeleted = getEmployeeFromRepository(id);
-
+		
 		if (toBeDeleted == null)
 			return INVALID_ID;
 
@@ -64,4 +66,6 @@ public class EmployeeService {
 			return optionalEmployee.get();
 		return null;
 	}
+	
+	
 }
