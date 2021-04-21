@@ -45,7 +45,7 @@ public class EmployeeService {
 			return INVALID_ID;
 
 		employeeRepository.delete(toBeDeleted);
-		return "Employee deleted successfully";
+		return "Employee deleted successfully.";
 	}
 
 	// Helper methods downwards

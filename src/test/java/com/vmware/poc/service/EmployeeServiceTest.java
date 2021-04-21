@@ -4,14 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.repository.EmployeeRepository;
 
@@ -25,8 +23,8 @@ public class EmployeeServiceTest {
 
 	@Test
 	public void testSaveAnEmployee() {
-		Employee testInstance = new Employee("Test user", 100);
-		when(employeeService.saveAnEmployee(Mockito.any(Employee.class))).thenReturn(testInstance);
+		Employee testInstance = new Employee("Test user", 100);		
+		when(employeeRepository.save(Mockito.any(Employee.class))).thenReturn(testInstance);
 		Employee saved = employeeService.saveAnEmployee(testInstance);
 		assertEquals(testInstance.getEmployeeName(), saved.getEmployeeName());
 	}
