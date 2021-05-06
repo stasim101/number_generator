@@ -2,16 +2,11 @@ package com.vmware.poc.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.vmware.poc.model.Employee;
 
 @RunWith(PowerMockRunner.class)
@@ -74,6 +68,7 @@ public class EmployeeServiceTest {
 
 		when(employeeServiceMock.updateAnEmployee(Mockito.anyLong(), Mockito.any(Employee.class)))
 				.thenReturn(employeeMock);
+
 		when(employeeMock.getEmployeeName()).thenReturn("Dummy");
 		when(employeeMock.getEmployeeAge()).thenReturn(23);
 		when(employeeMock.getId()).thenReturn(10L);
@@ -89,26 +84,12 @@ public class EmployeeServiceTest {
 	@Test
 	public void testdeleteAnEmployee() {
 
-		doNothing().when(employeeServiceMock).deleteAnEmployee(Mockito.anyLong());
+		when(employeeServiceMock.deleteAnEmployee(Mockito.anyLong())).thenReturn(true);
+		assertTrue(employeeServiceMock.deleteAnEmployee(10));
 
-		employeeServiceMock.deleteAnEmployee(10L);
+		when(employeeServiceMock.deleteAnEmployee(Mockito.anyLong())).thenReturn(false);
+		assertTrue(!employeeServiceMock.deleteAnEmployee(10));
 
-		verify(employeeServiceMock, times(1)).deleteAnEmployee(10L);
-
-		when(employeeServiceMock.saveAnEmployee(Mockito.any(Employee.class))).thenReturn(employeeMock);
-		when(employeeMock.getEmployeeName()).thenReturn("Dummy");
-		when(employeeMock.getEmployeeAge()).thenReturn(23);
-		when(employeeMock.getId()).thenReturn(10L);
-
-		Employee actual = employeeServiceMock.saveAnEmployee(employeeMock);
-
-		assertEquals(employeeMock.getId(), actual.getId());
-		assertEquals(employeeMock.getEmployeeName(), actual.getEmployeeName());
-		assertEquals(employeeMock.getEmployeeAge(), actual.getEmployeeAge());
-
-		employeeServiceMock.deleteAnEmployee(actual.getId());
-		when(employeeServiceMock.getEmployeeList()).thenReturn(new ArrayList());
-		assertTrue(employeeServiceMock.getEmployeeList().isEmpty());
 	}
 
 	@Test
