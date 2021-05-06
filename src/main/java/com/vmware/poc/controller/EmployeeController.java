@@ -1,10 +1,9 @@
 package com.vmware.poc.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,44 +32,31 @@ public class EmployeeController {
 	}
 
 	@PutMapping("/create")
-	public ResponseEntity createNewEmployee(@RequestBody Employee employee) {
+	public ResponseEntity<Employee> createNewEmployee(@RequestBody Employee employee) {
 		return (employee.getEmployeeAge() > 0 && employee.getEmployeeName() != null)
-				? new ResponseEntity<Employee>(employeeService.saveAnEmployee(employee), HttpStatus.OK)
-				: new ResponseEntity<String>("Employee details cannot be saved", HttpStatus.NO_CONTENT);
+				? new ResponseEntity<>(employeeService.saveAnEmployee(employee), HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping("/find/{id}")
-	public ResponseEntity retrieveAnEmployee(@PathVariable("id") long id) {
-		Employee employee = employeeService.getAnEmployee(id);
-		return (employee == null)
-				? new ResponseEntity<String>("Employee with id:" + id + " cannot be found", HttpStatus.NOT_FOUND)
-				: new ResponseEntity<Employee>(employee, HttpStatus.FOUND);
+	public ResponseEntity<Employee> retrieveAnEmployee(@PathVariable("id") long id) {
+		return ResponseEntity.ok(employeeService.getAnEmployee(id));
 	}
 
 	@PatchMapping("/update/{id}")
-	public ResponseEntity updateEmployeeData(@PathVariable("id") long id, @RequestBody Employee employee) {
-		if (employee.getEmployeeAge() > 0 && employee.getEmployeeName() != null) {
-			
-			Employee employeeBody = employeeService.updateAnEmployee(id, employee);		
-			return (employeeBody == null)
-					? new ResponseEntity<String>("Employee with id:" + id + " cannot be found", HttpStatus.NOT_FOUND)
-					: new ResponseEntity<Employee>(employeeBody, HttpStatus.OK);
-		}
-		return new ResponseEntity<String>("Employee details cannot be updated", HttpStatus.NO_CONTENT);
+	public ResponseEntity<Employee> updateEmployeeData(@PathVariable("id") long id, @RequestBody Employee employee) {
+		return (StringUtils.hasLength(employee.getEmployeeName()) || employee.getEmployeeAge() > 0)
+				? new ResponseEntity<>(employeeService.updateAnEmployee(id, employee), HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteAnEmployee(@PathVariable("id") long id) {
-		return (employeeService.deleteAnEmployee(id))
-				? new ResponseEntity<>("Employee with id:" + id + " deleted successfully", HttpStatus.OK)
-				: new ResponseEntity<>("Employee with id:" + id + " cannot be found", HttpStatus.NOT_FOUND);
+	public ResponseEntity<Object> deleteAnEmployee(@PathVariable("id") long id) {
+		return ResponseEntity.ok(employeeService.deleteAnEmployee(id));
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity getEmployeeList() {
-		List<Employee> employeeList = employeeService.getEmployeeList();
-		return (employeeList.isEmpty())
-				? new ResponseEntity<String>("Employee details are not stored in DB", HttpStatus.NO_CONTENT)
-				: new ResponseEntity<List<Employee>>(employeeList, HttpStatus.OK);
+	public ResponseEntity<Object> getEmployeeList() {
+		return ResponseEntity.ok(employeeService.getEmployeeList());
 	}
 }

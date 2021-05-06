@@ -1,6 +1,6 @@
 package com.vmware.poc.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -10,12 +10,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.service.EmployeeService;
 
@@ -32,16 +38,20 @@ public class EmployeeControllerTest {
 	@Mock
 	private Employee employeeMock;
 
+	@Autowired
+	private MockMvc mvc;
+
 	@Test
 	public void testCreateNewEmployee() {
-		
+
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
 		when(employeeMock.getEmployeeName()).thenReturn("Dummy");
 		when(employeeMock.getEmployeeAge()).thenReturn(23);
 		when(employeeService.saveAnEmployee(Mockito.any(Employee.class))).thenReturn(employeeMock);
 
-		ResponseEntity<Object> responseEntity = employeeController.createNewEmployee(employeeMock);
+		ResponseEntity<Employee> responseEntity = employeeController.createNewEmployee(employeeMock);
 
 		Employee response = (Employee) responseEntity.getBody();
 
@@ -51,40 +61,44 @@ public class EmployeeControllerTest {
 
 		when(employeeMock.getEmployeeName()).thenReturn(null);
 		responseEntity = employeeController.createNewEmployee(employeeMock);
-		
-		assertEquals("Employee details cannot be saved", responseEntity.getBody());
 		assertEquals(204, responseEntity.getStatusCodeValue());
-		
+
 	}
-	
+
 	@Test
 	public void testRetrieveAnEmployee() {
-		
+
 		when(employeeMock.getEmployeeName()).thenReturn("Dummy");
 		when(employeeMock.getEmployeeAge()).thenReturn(23);
-		
+
 		when(employeeService.getAnEmployee(Mockito.any(Long.class))).thenReturn(employeeMock);
-		
-		ResponseEntity<Object> responseEntity = employeeController.retrieveAnEmployee(100);
-		  
+
+		ResponseEntity<Employee> responseEntity = employeeController.retrieveAnEmployee(100);
+
 		Employee response = (Employee) responseEntity.getBody();
 
-		assertEquals(302, responseEntity.getStatusCodeValue());
+		assertEquals(200, responseEntity.getStatusCodeValue());
 		assertEquals(employeeMock.getEmployeeName(), response.getEmployeeName());
 		assertEquals(employeeMock.getEmployeeAge(), response.getEmployeeAge());
-		
-		when(employeeService.getAnEmployee(Mockito.any(Long.class))).thenReturn(null);
-		responseEntity = employeeController.retrieveAnEmployee(100);
-		
-		assertEquals("Employee with id:"+100+" cannot be found", responseEntity.getBody());
+
+		when(employeeService.getAnEmployee(1L)).thenReturn(null);
+		responseEntity = employeeController.retrieveAnEmployee(1);
 		assertEquals(404, responseEntity.getStatusCodeValue());
-		
+
 	}
-	
-	
-	
-	
-	
+
+	@Test
+	public void testUpdateEmployeeData() {
+		
+		Employee employee = new Employee("Dummy",23);
+		/*
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+				  .patch("/api/update/")
+			      .contentType(MediaType.APPLICATION_JSON_VALUE)
+			*/      
+
+	}
+
 	/*
 	 * 
 	 * @InjectMocks private EmployeeController employeeController;
