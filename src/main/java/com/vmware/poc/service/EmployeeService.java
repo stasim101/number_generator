@@ -1,20 +1,20 @@
 package com.vmware.poc.service;
 
+import java.util.List;
 import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.repository.EmployeeRepository;
 
 @Service
 public class EmployeeService {
 
-	private static final String INVALID_ID = "Invalid employee id !";
-
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+	private static final String EMPLOYEE_NOT_FOUND = "Employee not found with id:";
+	
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
@@ -22,50 +22,37 @@ public class EmployeeService {
 		return employeeRepository.save(employee);
 	}
 
-	public String getAnEmployee(long id) {
-		Employee employeeInstance = getEmployeeFromRepository(id);
-		return (employeeInstance != null) ? convertToJSONString(employeeInstance) : INVALID_ID;
-	}
-
-	public String updateAnEmployee(long id, Employee newEmployee) {
-		Employee retrieved = getEmployeeFromRepository(id);
-
-		if (retrieved == null)
-			return INVALID_ID;
-
-		if (newEmployee.getEmployeeName() != null)
-			retrieved.setEmployeeName(newEmployee.getEmployeeName());
-		if (newEmployee.getEmployeeAge() > 0)
-			retrieved.setEmployeeAge(newEmployee.getEmployeeAge());
-		return convertToJSONString(employeeRepository.save(retrieved));
-	}
-
-	public String deleteAnEmployee(long id) {
-		Employee toBeDeleted = getEmployeeFromRepository(id);
-		
-		if (toBeDeleted == null)
-			return INVALID_ID;
-
-		employeeRepository.delete(toBeDeleted);
-		return "Employee deleted successfully.";
-	}
-
-	// Helper methods downwards
-	private String convertToJSONString(Employee employeeObject) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			return objectMapper.writeValueAsString(employeeObject);
-		} catch (JsonProcessingException e) {
-			return "Couldn't print employee data.Try Again !";
-		}
-	}
-
-	private Employee getEmployeeFromRepository(long id) {
-		Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-		if (optionalEmployee.isPresent())
-			return optionalEmployee.get();
+	public Employee getAnEmployee(long id) {
+		Optional<Employee> employeeOptional = employeeRepository.findById(id);
+		if (employeeOptional.isPresent())
+			return employeeOptional.get();
+		logger.error(EMPLOYEE_NOT_FOUND + id);
 		return null;
 	}
-	
-	
+
+	public Employee updateAnEmployee(long id, Employee employee) {
+
+		Employee storedEmployee = getAnEmployee(id);
+
+		if (storedEmployee == null) {
+			logger.error(EMPLOYEE_NOT_FOUND + id);
+			return null;
+		}
+
+		if (!employee.getEmployeeName().isEmpty())
+			storedEmployee.setEmployeeName(employee.getEmployeeName());
+
+		if (employee.getEmployeeAge() > 0)
+			storedEmployee.setEmployeeAge(employee.getEmployeeAge());
+
+		return saveAnEmployee(storedEmployee);
+	}
+
+	public void deleteAnEmployee(long id) {
+		employeeRepository.deleteById(id);
+	}
+
+	public List<Employee> getEmployeeList() {
+		return (List<Employee>) employeeRepository.findAll();
+	}
 }

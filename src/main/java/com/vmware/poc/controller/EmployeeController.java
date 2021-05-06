@@ -32,21 +32,26 @@ public class EmployeeController {
 
 	@PutMapping("/create")
 	public ResponseEntity<Object> createNewEmployee(@RequestBody Employee employee) {
-		return new ResponseEntity<>(employeeService.saveAnEmployee(employee), HttpStatus.CREATED);
+	//	return new ResponseEntity<>(employeeService.saveAnEmployee(employee), HttpStatus.CREATED);
+		return null;
+	//ResponseEntity<Response> result = restTemplate.exchange(uri, HttpMethod.GET, entity, Response.class);     
 	}
 
 	@GetMapping("/find/{id}")
 	public ResponseEntity<Object> retreiveAnEmployee(@PathVariable("id") long id) {
-		return ResponseEntity.ok(employeeService.getAnEmployee(id));
+		//return ResponseEntity.ok(employeeService.getAnEmployee(id));
+		return null;
 	}
 
 	@PatchMapping("/update/{id}")
 	public ResponseEntity<Object> updateEmployeeData(@PathVariable("id") long id, @RequestBody Employee employee) {
-		return ResponseEntity.ok(employeeService.updateAnEmployee(id, employee));
+		//return ResponseEntity.ok(employeeService.updateAnEmployee(id, employee));
+		return null;
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Object> deleteAnEmployee(@PathVariable("id") long id) {
-		return ResponseEntity.ok(employeeService.deleteAnEmployee(id));
+	//	return ResponseEntity.ok(employeeService.deleteAnEmployee(id));
+	return null;
 	}
 }
