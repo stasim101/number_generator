@@ -51,12 +51,12 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Object> deleteAnEmployee(@PathVariable("id") long id) {
+	public ResponseEntity<Object> deleteEmployeeData(@PathVariable("id") long id) {
 		return ResponseEntity.ok(employeeService.deleteAnEmployee(id));
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<Object> getEmployeeList() {
+	public ResponseEntity<Object> getAllEmployees() {
 		return ResponseEntity.ok(employeeService.getEmployeeList());
 	}
 }
