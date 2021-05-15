@@ -1,7 +1,5 @@
 package com.vmware.poc.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,45 +18,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.service.EmployeeService;
+import com.vmware.poc.service.FileUploadService;
 
 @RestController
 @RequestMapping("/api")
 public class EmployeeController {
 
-	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
-
 	@Autowired
 	private EmployeeService employeeService;
 
+	@Autowired
+	private FileUploadService fileUploadService;
+
 	@PostMapping("/employee")
-	public ResponseEntity<String> uploadEmployeeDataFile(
-			@RequestParam("action") String action) throws Exception{
-
-/*		
-		
-		try {
-
-			final FileInputStream inputStream = new FileInputStream(file.getName());
-
-			//final FileChannel channel = inputStream.getChannel();
-
-			//MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-			ByteBuffer buffer = ByteBuffer.allocate(65536);
-			ReadableByteChannel in = Channels.newChannel(inputStream);
-
-			while (in.read(buffer) != -1) {
-
-				buffer.flip();
-				logger.info(buffer.toString());
-				buffer.clear();
-
-			}
-
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		*/
-		return ResponseEntity.ok(action);
+	public ResponseEntity<Object> uploadEmployeeDataFile(@RequestParam("file") MultipartFile file,
+			@RequestParam("action") String action) throws Exception {
+		return (action.equals("upload")) ? ResponseEntity.ok(fileUploadService.uploadFile(file))
+				: new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping("/create")

@@ -42,4 +42,8 @@ public class Employee {
 		this.employeeAge = employeeAge;
 	}
 
+	@Override
+	public String toString() {
+		return "{"+"employeeName:"+this.employeeName+", employeeAge"+this.employeeAge+"}";
+	}
 }

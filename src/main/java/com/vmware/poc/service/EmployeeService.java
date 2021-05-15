@@ -1,6 +1,7 @@
 package com.vmware.poc.service;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,4 +61,10 @@ public class EmployeeService {
 		logger.info("Fetching all employees");
 		return (List<Employee>) employeeRepository.findAll();
 	}
+
+	public List<Employee> saveEmployeeList(List<Employee> employees) {
+		logger.info("Saving employees batch");
+		return (List<Employee>) employeeRepository.saveAll(employees);
+	}
+
 }
