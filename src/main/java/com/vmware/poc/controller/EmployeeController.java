@@ -1,5 +1,7 @@
 package com.vmware.poc.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.service.EmployeeService;
 
@@ -22,12 +25,40 @@ import com.vmware.poc.service.EmployeeService;
 @RequestMapping("/api")
 public class EmployeeController {
 
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+
 	@Autowired
 	private EmployeeService employeeService;
 
 	@PostMapping("/employee")
-	public long uploadEmployeeDataFile(@RequestParam("file") MultipartFile file, @RequestParam String action) {
-		return 0L;
+	public ResponseEntity<String> uploadEmployeeDataFile(
+			@RequestParam("action") String action) throws Exception{
+
+/*		
+		
+		try {
+
+			final FileInputStream inputStream = new FileInputStream(file.getName());
+
+			//final FileChannel channel = inputStream.getChannel();
+
+			//MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+			ByteBuffer buffer = ByteBuffer.allocate(65536);
+			ReadableByteChannel in = Channels.newChannel(inputStream);
+
+			while (in.read(buffer) != -1) {
+
+				buffer.flip();
+				logger.info(buffer.toString());
+				buffer.clear();
+
+			}
+
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+		*/
+		return ResponseEntity.ok(action);
 	}
 
 	@PutMapping("/create")

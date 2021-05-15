@@ -1,4 +1,4 @@
-package com.vmware.poc.excpetion;
+package com.vmware.poc.exception;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 

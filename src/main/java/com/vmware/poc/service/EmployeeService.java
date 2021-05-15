@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import com.vmware.poc.excpetion.EmployeeNotFoundException;
+
+import com.vmware.poc.exception.EmployeeNotFoundException;
 import com.vmware.poc.model.Employee;
 import com.vmware.poc.repository.EmployeeRepository;
 

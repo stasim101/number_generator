@@ -30,6 +30,7 @@ public class RecordRangePartioner implements Partitioner {
 		int partitionNumber = 0;
 		int initialRecord = 1;
 		int numberOfRecord = 10000;
+		@SuppressWarnings("unused")
 		int endRecord = numberOfRecord;
 
 		Map<String, ExecutionContext> result = new HashMap<>();
