@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(NOT_FOUND)
 @ControllerAdvice
-public class EmployeeNotFoundException extends RuntimeException {
+public class TaskNotFoundException extends RuntimeException {
 
-	private static final long serialVersionUID = 1260600918767842633L;
+	private static final long serialVersionUID = -2332950075703196835L;
 
-	private static final Logger logger = LoggerFactory.getLogger(EmployeeNotFoundException.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskNotFoundException.class);
 
-	public EmployeeNotFoundException() {
+	public TaskNotFoundException() {
 		super();
-		logger.info("Employee not found");
+		logger.info("Task not found");
 	}
 }

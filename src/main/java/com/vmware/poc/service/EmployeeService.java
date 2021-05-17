@@ -67,4 +67,8 @@ public class EmployeeService {
 		return (List<Employee>) employeeRepository.saveAll(employees);
 	}
 
+	public List<Employee> getEmployeeListWithIdGreaterThanEqual(long id) {
+		logger.info("Fetching all employees having greater than or equal id to provided one");
+		return employeeRepository.findByIdGreaterThanEqual(id);
+	}
 }

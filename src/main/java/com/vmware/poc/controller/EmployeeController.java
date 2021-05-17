@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vmware.poc.model.Employee;
+import com.vmware.poc.model.UploadTask;
 import com.vmware.poc.service.EmployeeService;
 import com.vmware.poc.service.FileUploadService;
+import com.vmware.poc.service.UploadTaskService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,13 +30,22 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 
 	@Autowired
+	private UploadTaskService uploadTaskService;
+
+	@Autowired
 	private FileUploadService fileUploadService;
 
 	@PostMapping("/employee")
 	public ResponseEntity<Object> uploadEmployeeDataFile(@RequestParam("file") MultipartFile file,
 			@RequestParam("action") String action) throws Exception {
-		return (action.equals("upload")) ? ResponseEntity.ok(fileUploadService.uploadFile(file))
-				: new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+		UploadTask uploadTask = uploadTaskService.generateTask(file.getOriginalFilename());
+		fileUploadService.uploadFileAsync(file, uploadTask.getTaskid());
+		return ResponseEntity.ok(uploadTask);
+	}
+
+	@GetMapping("/task/{id}")
+	public ResponseEntity<Object> trackUploadTask(@PathVariable("id") long taskId) {
+		return ResponseEntity.ok(uploadTaskService.getTaskStatusById(taskId));
 	}
 
 	@PutMapping("/create")

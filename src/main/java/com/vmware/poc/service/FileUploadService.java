@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.vmware.poc.enums.UploadTaskStatus;
 import com.vmware.poc.model.Employee;
 
 @Service
@@ -21,7 +22,11 @@ public class FileUploadService {
 	@Autowired
 	private EmployeeService employeeService;
 
-	public List<Employee> uploadFile(MultipartFile file) {
+	@Autowired
+	private UploadTaskService uploadTaskService;
+
+	@Transactional
+	public void uploadFile(MultipartFile file, long taskId) {
 
 		List<Employee> employees = new ArrayList<>();
 
@@ -40,23 +45,38 @@ public class FileUploadService {
 
 				if ((lineCount + 1) % 500 == 0) {
 
-					employeeService.saveEmployeeList(employees);
+					employees = employeeService.saveEmployeeList(employees);
 					employees.clear();
 				}
 
 				lineCount++;
 			}
 
-			logger.info(employees.toString());
+		} catch (NumberFormatException nfe) {
+
+			// Saving last batch of employees
+			if (nfe.toString().contains("For input string: \"\""))
+				employeeService.saveEmployeeList(employees);
+
+			uploadTaskService.setTaskStatusById(taskId, UploadTaskStatus.SUCCESS);
 
 		} catch (Exception e) {
-			logger.error("Error : " + e.getMessage());
-		} finally {
-			logger.info("End of file");
-			employeeService.saveEmployeeList(employees);
+			
+			logger.warn("Error while uploading file ", e.getMessage());
+			uploadTaskService.setTaskStatusById(taskId, UploadTaskStatus.FAILURE);
 		}
-
-		return employeeService.getEmployeeList();
 	}
 
+	@Async
+	public void uploadFileAsync(MultipartFile file, long taskId) {
+		logger.info("> sendAsync");
+
+		try {
+			uploadFile(file, taskId);
+		} catch (Exception e) {
+			logger.warn("Exception caught sending asynchronous data.", e.getMessage());
+		}
+
+		logger.info("< sendAsync");
+	}
 }
