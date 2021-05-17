@@ -14,7 +14,7 @@ public class UploadTask {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long taskid;
+	private long taskId;
 	@Enumerated(EnumType.ORDINAL)
 	private UploadTaskStatus status;
 	private String fileName;
@@ -28,11 +28,11 @@ public class UploadTask {
 	}
 
 	public long getTaskid() {
-		return taskid;
+		return taskId;
 	}
 
-	public void setTaskid(long taskid) {
-		this.taskid = taskid;
+	public void setTaskid(long taskId) {
+		this.taskId = taskId;
 	}
 
 	public UploadTaskStatus getTaskStatus() {
