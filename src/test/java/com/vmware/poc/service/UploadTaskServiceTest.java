@@ -1,7 +1,6 @@
 package com.vmware.poc.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,16 +11,12 @@ import org.mockito.Mockito;
 
 import com.vmware.poc.enums.UploadTaskStatus;
 import com.vmware.poc.model.UploadTask;
-import com.vmware.poc.model.UploadTaskTest;
-import com.vmware.poc.repository.UploadTaskRepository;
 
 public class UploadTaskServiceTest {
 
 	@InjectMocks
 	private UploadTaskService uploadTaskService = mock(UploadTaskService.class, Mockito.RETURNS_DEEP_STUBS);
 
-	@Mock
-	private UploadTaskRepository uploadTaskRepository;
 	@Mock
 	private UploadTask uploadTask;
 
