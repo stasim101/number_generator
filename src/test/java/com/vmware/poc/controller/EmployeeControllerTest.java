@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vmware.poc.enums.UploadTaskStatus;
 import com.vmware.poc.model.Employee;
@@ -42,15 +43,30 @@ public class EmployeeControllerTest {
 	@Mock
 	private EmployeeRepository employeeRepository;
 
-	// @Test
-	public void testUploadEmployeeDataFile() {
+	@Mock
+	private MultipartFile file;
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadEmployeeDataFile() throws Exception {
+
+		ResponseEntity<Object> responseEntity = employeeController.uploadEmployeeDataFile(file, "upload");
+		assertEquals(200, responseEntity.getStatusCodeValue());
+		assertEquals(true, responseEntity.hasBody());
+		assertEquals(uploadTask, (UploadTask) responseEntity.getBody());
+
+		when(employeeController.uploadEmployeeDataFile(Mockito.any(MultipartFile.class), Mockito.anyString()))
+				.thenCallRealMethod();
+		responseEntity = employeeController.uploadEmployeeDataFile(file, "upload");
+		assertEquals(400, responseEntity.getStatusCodeValue());
+		assertEquals(true, responseEntity.hasBody());
+		assertEquals("Invalid action", (String) responseEntity.getBody());
 
 	}
 
 	@Test
 	public void testTrackUploadTask() {
 		when(uploadTaskService.getTaskStatusById(Mockito.anyLong())).thenReturn(UploadTaskStatus.SUCCESS);
-	
+
 		ResponseEntity<Object> responseEntity = employeeController.trackUploadTask(100L);
 		assertEquals(200, responseEntity.getStatusCodeValue());
 		assertEquals(true, responseEntity.hasBody());
@@ -93,7 +109,6 @@ public class EmployeeControllerTest {
 
 		when(employee.getEmployeeName()).thenReturn("Testname");
 		when(employee.getEmployeeAge()).thenReturn(10);
-		when(employeeService.getAnEmployee(Mockito.anyLong())).thenReturn(employee);
 		when(employeeService.updateAnEmployee(Mockito.anyLong(), Mockito.any(Employee.class))).thenReturn(employee);
 
 		ResponseEntity<Employee> responseEntity = employeeController.updateEmployeeData(10L, employee);
@@ -105,7 +120,6 @@ public class EmployeeControllerTest {
 	@Test
 	public void testDeleteEmployeeData() {
 
-		when(employeeService.getAnEmployee(Mockito.anyLong())).thenReturn(null);
 		ResponseEntity<Object> responseEntity = employeeController.deleteEmployeeData(10L);
 		assertEquals(false, responseEntity.getBody());
 		assertEquals(200, responseEntity.getStatusCodeValue());

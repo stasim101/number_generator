@@ -38,6 +38,8 @@ public class EmployeeController {
 	@PostMapping("/employee")
 	public ResponseEntity<Object> uploadEmployeeDataFile(@RequestParam("file") MultipartFile file,
 			@RequestParam("action") String action) throws Exception {
+		if (!action.equals("upload"))
+			return new ResponseEntity<>("Invalid action", HttpStatus.BAD_REQUEST);
 		UploadTask uploadTask = uploadTaskService.generateTask(file.getOriginalFilename());
 		fileUploadService.uploadFileAsync(file, uploadTask.getTaskid());
 		return ResponseEntity.ok(uploadTask);
