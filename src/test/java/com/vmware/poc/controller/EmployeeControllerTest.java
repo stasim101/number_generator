@@ -14,28 +14,47 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
+import com.vmware.poc.enums.UploadTaskStatus;
 import com.vmware.poc.model.Employee;
+import com.vmware.poc.model.UploadTask;
 import com.vmware.poc.repository.EmployeeRepository;
 import com.vmware.poc.service.EmployeeService;
+import com.vmware.poc.service.UploadTaskService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeControllerTest {
-
-	@Mock
-	private EmployeeService employeeService;
 
 	@InjectMocks
 	private EmployeeController employeeController;
 
 	@Mock
+	private EmployeeService employeeService;
+
+	@Mock
 	private Employee employee;
+
+	@Mock
+	private UploadTask uploadTask;
+
+	@Mock
+	private UploadTaskService uploadTaskService;
 
 	@Mock
 	private EmployeeRepository employeeRepository;
 
-	//@Test
+	// @Test
 	public void testUploadEmployeeDataFile() {
 
+	}
+
+	@Test
+	public void testTrackUploadTask() {
+		when(uploadTaskService.getTaskStatusById(Mockito.anyLong())).thenReturn(UploadTaskStatus.SUCCESS);
+	
+		ResponseEntity<Object> responseEntity = employeeController.trackUploadTask(100L);
+		assertEquals(200, responseEntity.getStatusCodeValue());
+		assertEquals(true, responseEntity.hasBody());
+		assertEquals(UploadTaskStatus.SUCCESS, (UploadTaskStatus) responseEntity.getBody());
 	}
 
 	@Test

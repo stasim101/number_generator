@@ -1,10 +1,12 @@
 package com.vmware.poc.service;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
 
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,19 +23,21 @@ public class FileUploadServiceTest {
 	@Mock
 	private EmployeeService employeeService;
 
-	@Test(expected = NullPointerException.class)
+	@Mock
+	private MultipartFile file;
+
+	@Test
 	public void testUploadFile() {
-		Whitebox.setInternalState(fileUploadService, "employeeService", employeeService);
-		doNothing().when(employeeService.saveEmployeeList(Mockito.anyList()));
-		verify(fileUploadService, times(1));
-		verify(employeeService, times(1));
+		doThrow(new RuntimeException()).when(fileUploadService).uploadFile(Mockito.any(MultipartFile.class),
+				Mockito.anyLong());
+		fileUploadService.uploadFile(file, 100L);
 	}
 
 	@Test
 	public void testUploadFileAsync() {
-		doNothing().when(fileUploadService).uploadFileAsync(Mockito.any(MultipartFile.class), Mockito.any(Long.class));
-		verify(fileUploadService, times(1));
-
+		doThrow(new RuntimeException()).when(fileUploadService).uploadFileAsync(Mockito.any(MultipartFile.class),
+				Mockito.any(Long.class));
+		fileUploadService.uploadFileAsync(file, 100L);
 	}
 
 }
